@@ -25,14 +25,14 @@ passengers_static = [
 
 class TestOptimalLoading(unittest.TestCase):
     
-    @unittest.skip("reason for skipping")
+    #@unittest.skip("reason for skipping")
     def test_minimize_row_delta_loading(self):
         loading, _ = minimize_row_delta(passengers_static)
 
         # Verify the number of passengers on each side
         self.assertEqual(len(loading['left_side']), len(loading['right_side']))
 
-    @unittest.skip("reason for skipping")
+    #@unittest.skip("reason for skipping")
     def test_minimize_row_delta(self):
 
         _, rows = minimize_row_delta(passengers_static)
@@ -43,6 +43,8 @@ class TestOptimalLoading(unittest.TestCase):
             right_weight = row['right_passenger']['weight']
             sum_weight = row['sum_weight']
             self.assertEqual(sum_weight, left_weight + right_weight)
+
+        print_optimal_seating_arrangement(rows)
         #*! Für später?
         ## Verify the order of rows based on sum of weights (heaviest to lightest)
         #for i in range(1, len(rows)):
@@ -52,7 +54,7 @@ class TestOptimalLoading(unittest.TestCase):
         #    curr_sum_weight = curr_row['sum_weight']
         #    self.assertGreaterEqual(prev_sum_weight, curr_sum_weight)
 
-
+    #@unittest.skip("reason for skipping")
     def test_optimal_seating(self):
         loading,rows = minimize_row_delta(passengers=passengers_static)
         seating = optimize_seating(rows)
