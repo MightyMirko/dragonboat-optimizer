@@ -42,9 +42,7 @@ def minimize_row_delta(passengers):
         }
         loading['rows'].append(row)
 
-    print_optimal_loading_result(loading)
-
-    return loading, loading["rows"]
+    return loading, loading["rows"] # In Loading there is key rows with subkey left right sum_weight
 
 def print_optimal_loading_result(loading):
     print("Optimal Loading Result:")
@@ -60,26 +58,34 @@ def print_optimal_loading_result(loading):
 
         print(f"{left_name} | {right_name} | {weight_sum}")
 
-def optimize_seating(loading):
-    # Calculate the total weight of each row
-    row_weights = []
-    for row in loading:
-        row_weight = sum(passenger['weight'] for passenger in row)
-        row_weights.append(row_weight)
 
-    # Sort the rows by their total weight in descending order
-    sorted_rows = [row for _, row in sorted(zip(row_weights, loading), reverse=True)]
+def print_optimal_seating_arrangement(seating_arrangement):
+    print("Optimal Loading Result:")
+    for row in seating_arrangement:
+        left_passenger = row['left_passenger']
+        right_passenger = row['right_passenger']
+        sum_weight = row['sum_weight']
 
-    # Assign seats to rows starting from the middle
+        left_name = left_passenger['name'] if left_passenger else ""
+        right_name = right_passenger['name'] if right_passenger else ""
+
+        print(f"{left_name} | {right_name} | {sum_weight}")
+
+
+def optimize_seating(rows):
+    # Berechnung der Gewichtssumme jeder Reihe
+    row_weights = [row['sum_weight'] for row in rows]
+    # Sortieren der Sitzreihen basierend auf dem Gewicht in absteigender Reihenfolge
+    sorted_rows = sorted(rows, key=lambda x: x['sum_weight'], reverse=True)
+
+    # Verteilung der Sitzplätze von der Mitte nach außen
     num_rows = len(sorted_rows)
     start_index = num_rows // 2
     seating_arrangement = [[] for _ in range(num_rows)]
 
-    # Assign seats to rows, reducing weight disparity from center to edges
     for i in range(num_rows):
         row_index = (start_index + i) % num_rows
-        row = sorted_rows[i]
-        seating_arrangement[row_index] = row
+        seating_arrangement[row_index] = sorted_rows[i]
 
-    print_optimal_loading_result(seating_arrangement)
+    # Rückgabe des optimierten Sitzarrangements
     return seating_arrangement
