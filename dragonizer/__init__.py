@@ -1,1 +1,2 @@
-from .loading import optimal_loading
+from .loading import minimize_row_delta
+

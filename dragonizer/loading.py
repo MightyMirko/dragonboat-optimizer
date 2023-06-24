@@ -1,5 +1,6 @@
 from munkres import Munkres
-def optimal_loading(passengers):
+
+def minimize_row_delta(passengers):
     # Separate left and right passengers
     left_passengers = []
     right_passengers = []
