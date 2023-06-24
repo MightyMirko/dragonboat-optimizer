@@ -1,5 +1,5 @@
 import unittest
-from dragonizer.loading import *
+from dragonizer.loading import SeatingOptimizer
 
 passengers_static = [
     {'weight': 75, 'name': 'Passenger1', 'preference': 'left'},
@@ -22,44 +22,38 @@ passengers_static = [
     {'weight': 95, 'name': 'Passenger18', 'preference': 'right'}
 ]
 
-
 class TestOptimalLoading(unittest.TestCase):
-    
-    #@unittest.skip("reason for skipping")
-    def test_minimize_row_delta_loading(self):
-        loading, _ = minimize_row_delta(passengers_static)
+    def setUp(self):
+        self.optimizer = SeatingOptimizer()
+        self.passengers = passengers_static
 
-        # Verify the number of passengers on each side
+    def test_minimize_row_delta_loading(self):
+        loading, _ = self.optimizer.minimize_row_delta(self.passengers)
+
+        # Überprüfen, ob die Anzahl der Passagiere auf jeder Seite gleich ist
         self.assertEqual(len(loading['left_side']), len(loading['right_side']))
 
-    #@unittest.skip("reason for skipping")
     def test_minimize_row_delta(self):
+        _, rows = self.optimizer.minimize_row_delta(self.passengers)
 
-        _, rows = minimize_row_delta(passengers_static)
-
-        # Verify the sum of weights in each row
+        # Überprüfen, ob die Gewichtssumme in jeder Reihe korrekt ist
         for row in rows:
             left_weight = row['left_passenger']['weight']
             right_weight = row['right_passenger']['weight']
             sum_weight = row['sum_weight']
             self.assertEqual(sum_weight, left_weight + right_weight)
 
-        print_optimal_seating_arrangement(rows)
-        #*! Für später?
-        ## Verify the order of rows based on sum of weights (heaviest to lightest)
-        #for i in range(1, len(rows)):
-        #    prev_row = rows[i-1]
-        #    curr_row = rows[i]
+    def test_optimize_seating(self):
+        _, rows = self.optimizer.minimize_row_delta(self.passengers)
+        seating_arrangement = self.optimizer.optimize_seating(rows)
+        self.optimizer.print_optimal_seating_arrangement(seating_arrangement)
+        # Überprüfen, ob die Reihenfolge der Sitzplätze korrekt ist
+        #for i in range(1, len(seating_arrangement)):
+        #    prev_row = seating_arrangement[i-1]
+        #    curr_row = seating_arrangement[i]
         #    prev_sum_weight = prev_row['sum_weight']
         #    curr_sum_weight = curr_row['sum_weight']
         #    self.assertGreaterEqual(prev_sum_weight, curr_sum_weight)
 
-    #@unittest.skip("reason for skipping")
-    def test_optimal_seating(self):
-        loading,rows = minimize_row_delta(passengers=passengers_static)
-        seating = optimize_seating(rows)
-        #print(seating)
-        print_optimal_seating_arrangement(seating)
-        
 if __name__ == '__main__':
     unittest.main()
