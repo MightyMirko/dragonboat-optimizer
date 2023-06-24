@@ -1,6 +1,17 @@
 from munkres import Munkres
 
 def minimize_row_delta(passengers):
+    """
+    Minimizes the weight difference between seating rows by assigning passengers to the left and right sides
+    based on their weights.
+
+    Args:
+        passengers (list): List of passengers with their weights and preferences.
+
+    Returns:
+        tuple: A tuple consisting of the optimal loading result and the rows with left and right passengers.
+    """
+
     # Separate left and right passengers
     left_passengers = []
     right_passengers = []
@@ -11,7 +22,7 @@ def minimize_row_delta(passengers):
         elif passenger['preference'] == 'right':
             right_passengers.append(passenger)
 
-    # Create weight matrix for the Hungarian Algorithm
+    # Create a weight matrix for the Hungarian Algorithm
     weight_matrix = []
     for left_passenger in left_passengers:
         row = []
@@ -42,9 +53,16 @@ def minimize_row_delta(passengers):
         }
         loading['rows'].append(row)
 
-    return loading, loading["rows"] # In Loading there is key rows with subkey left right sum_weight
+    return loading, loading["rows"]
 
 def print_optimal_seating_arrangement(seating_arrangement):
+    """
+    Prints the optimal seating arrangement.
+
+    Args:
+        seating_arrangement (list): The optimal seating arrangement consisting of rows with left and right passengers.
+    """
+
     print("Optimal Loading Result:")
     for row in seating_arrangement:
         left_passenger = row['left_passenger']
@@ -56,14 +74,23 @@ def print_optimal_seating_arrangement(seating_arrangement):
 
         print(f"{left_name} | {right_name} | {sum_weight}")
 
-
 def optimize_seating(rows):
-    # Berechnung der Gewichtssumme jeder Reihe
+    """
+    Optimizes the seating arrangement based on the rows with left and right passengers.
+
+    Args:
+        rows (list): The rows with left and right passengers.
+
+    Returns:
+        list: The optimized seating arrangement.
+    """
+
+    # Compute the weight sum of each row
     row_weights = [row['sum_weight'] for row in rows]
-    # Sortieren der Sitzreihen basierend auf dem Gewicht in absteigender Reihenfolge
+    # Sort the rows based on weight in descending order
     sorted_rows = sorted(rows, key=lambda x: x['sum_weight'], reverse=True)
 
-    # Verteilung der Sitzplätze von der Mitte nach außen
+    # Distribute the seats from the middle outward
     num_rows = len(sorted_rows)
     start_index = num_rows // 2
     seating_arrangement = [[] for _ in range(num_rows)]
@@ -72,5 +99,5 @@ def optimize_seating(rows):
         row_index = (start_index + i) % num_rows
         seating_arrangement[row_index] = sorted_rows[i]
 
-    # Rückgabe des optimierten Sitzarrangements
+    # Return the optimized seating arrangement
     return seating_arrangement
