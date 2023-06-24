@@ -1,31 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Passenger Seating Arrangement</title>
+    <title>Dragonboat Optimizer</title>
 </head>
 <body>
-    <h1>Passenger Seating Arrangement</h1>
-    <form method="POST" action="/">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.passenger1.label }} {{ form.passenger1(size=20) }}
-            {{ form.passenger1.errors }}
-        </p>
-        <p>
-            {{ form.passenger2.label }} {{ form.passenger2(size=20) }}
-            {{ form.passenger2.errors }}
-        </p>
-        <!-- Füge weitere Felder für die Passagierdaten hinzu -->
-
-        <p><input type="submit" value="Generate Seating Arrangement"></p>
+    <h1>Dragonboat Optimizer</h1>
+    <form id="passenger-form">
+        <label for="passenger-name">Passenger Name:</label>
+        <input type="text" id="passenger-name" name="passenger-name" required>
+        <br>
+        <label for="passenger-weight">Passenger Weight:</label>
+        <input type="number" id="passenger-weight" name="passenger-weight" required>
+        <br>
+        <label for="passenger-preference">Passenger Preference:</label>
+        <select id="passenger-preference" name="passenger-preference">
+            <option value="left">Left</option>
+            <option value="right">Right</option>
+        </select>
+        <br>
+        <input type="button" value="Add Passenger" onclick="addPassenger()">
     </form>
-    {% if seating_arrangement %}
-        <h2>Seating Arrangement:</h2>
-        <ul>
-            {% for row in seating_arrangement %}
-                <li>{{ row }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-</body>
-</html>
+    <br>
+    <button onclick="optimizeSeating()">Optimize Seating</button>
+    <br>
+    <h2>Optimal Loading Result:</h2>
+    <ul id="seating-result"></ul>
+
+    <script>
+        var passengers = [];
+
+        function addPassenger() {
+            var name = document.getElementById('passenger-name').value;
+            var weight = parseInt(document.getElementById('passenger-weight').value);
+            var preference = document.getElementById('passenger-preference').value;
+
+            passengers.push({ 'name': name, 'weight': weight, 'preference': preference });
+           

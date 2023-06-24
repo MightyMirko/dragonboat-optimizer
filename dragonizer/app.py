@@ -1,40 +1,33 @@
-from flask import Flask, render_template, request
-from flask_wtf import FlaskForm
-from wtforms import StringField
-from wtforms.validators import DataRequired
+from flask import Flask, render_template, request, jsonify
+from dragonizer.loading import SeatingOptimizer
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key'
+optimizer = SeatingOptimizer()
 
-# Formularklasse erstellen
-class PassengerForm(FlaskForm):
-    passenger1 = StringField('Passenger 1', validators=[DataRequired()])
-    passenger2 = StringField('Passenger 2', validators=[DataRequired()])
-    # Füge weitere Felder für die Passagierdaten hinzu
-
-# Routen definieren
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    form = PassengerForm()
-    seating_arrangement = None
+    return render_template('index.html')
 
-    if form.validate_on_submit():
-        # Verarbeite die eingegebenen Passagierdaten und generiere das Sitzarrangement
-        passenger1 = form.passenger1.data
-        passenger2 = form.passenger2.data
-        # Verarbeite weitere eingegebene Felder für die Passagierdaten
+@app.route('/optimize', methods=['POST'])
+def optimize():
+    passengers = request.get_json()
 
-        # Hier kannst du deine Logik für die Generierung des Sitzarrangements einfügen
-        seating_arrangement = generate_seating_arrangement(passenger1, passenger2)  # Funktion zum Generieren des Sitzarrangements
+    loading, rows = optimizer.minimize_row_delta(passengers)
+    seating_arrangement = optimizer.optimize_seating(rows)
 
-    return render_template('index.html', form=form, seating_arrangement=seating_arrangement)
+    # Erstelle eine Liste mit den Sitzplatzinformationen
+    seating_info = []
+    for row in seating_arrangement:
+        left_passenger = row['left_passenger']
+        right_passenger = row['right_passenger']
+        sum_weight = row['sum_weight']
 
-# Beispiel-Funktion zur Generierung des Sitzarrangements
-def generate_seating_arrangement(passenger1, passenger2):
-    # Hier deine Logik zum Generieren des Sitzarrangements einfügen
-    seating_arrangement = ['Row 1: {} and {}'.format(passenger1, passenger2)]
+        left_name = left_passenger['name'] if left_passenger else ""
+        right_name = right_passenger['name'] if right_passenger else ""
 
-    return seating_arrangement
+        seating_info.append({'left_name': left_name, 'right_name': right_name, 'sum_weight': sum_weight})
+
+    return jsonify({'loading': loading, 'seating_arrangement': seating_info})
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
