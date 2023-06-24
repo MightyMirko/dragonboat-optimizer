@@ -31,5 +31,20 @@ def optimal_loading(passengers):
         'left_side': left_assigned,
         'right_side': right_assigned,
     }
-    
+    print_optimal_loading_result(loading)
+
     return loading
+
+def print_optimal_loading_result(loading):
+    print("Optimal Loading Result:")
+
+    print("Left | Right | Sum")
+    for row in range(max(len(loading['left_side']), len(loading['right_side']))):
+        left_passenger = loading['left_side'][row] if row < len(loading['left_side']) else None
+        right_passenger = loading['right_side'][row] if row < len(loading['right_side']) else None
+
+        left_name = left_passenger['name'] if left_passenger else ""
+        right_name = right_passenger['name'] if right_passenger else ""
+        weight_sum = left_passenger['weight'] + right_passenger['weight'] if (left_passenger and right_passenger) else 0
+
+        print(f"{left_name} | {right_name} | {weight_sum}")

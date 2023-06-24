@@ -49,7 +49,7 @@ class TestOptimalLoading(unittest.TestCase):
             'right_side': [p['name'] for p in right_passengers]
         }
         print("Sitzanordnung:")
-        print(seating)
+        #print(seating)
 
 
 
