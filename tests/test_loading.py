@@ -1,5 +1,5 @@
 import unittest
-from dragonizer.loading import optimal_loading
+from dragonizer.loading import *
 
 passengers_static = [
     {'weight': 75, 'name': 'Passenger1', 'preference': 'left'},
@@ -25,33 +25,36 @@ passengers_static = [
 
 class TestOptimalLoading(unittest.TestCase):
 
-    def test_optimal_loading(self):
-        loading = optimal_loading(passengers=passengers_static)
+    def test_minimize_row_delta_loading(self):
+        loading, _ = minimize_row_delta(passengers_static)
 
-        # Separate left and right passengers
-        left_passengers = loading['left_side']
-        right_passengers = loading['right_side']
-
-        # Calculate weight sums
-        left_side_weight_sum = sum(p['weight'] for p in left_passengers)
-        right_side_weight_sum = sum(p['weight'] for p in right_passengers)
-
-        # Verify the optimal loading result
-        self.assertAlmostEqual(left_side_weight_sum, right_side_weight_sum,delta=50)
-
-        # Print weight sums
-        print("Summe der Gewichte links:", left_side_weight_sum)
-        print("Summe der Gewichte rechts:", right_side_weight_sum)
-
-        # Print the seating arrangement for visualization
-        seating = {
-            'left_side': [p['name'] for p in left_passengers],
-            'right_side': [p['name'] for p in right_passengers]
-        }
-        print("Sitzanordnung:")
-        #print(seating)
+        # Verify the number of passengers on each side
+        self.assertEqual(len(loading['left_side']), len(loading['right_side']))
 
 
+    def test_minimize_row_delta(self):
+
+        _, rows = minimize_row_delta(passengers_static)
+
+        # Verify the sum of weights in each row
+        for row in rows:
+            left_weight = row['left_passenger']['weight']
+            right_weight = row['right_passenger']['weight']
+            sum_weight = row['sum_weight']
+            self.assertEqual(sum_weight, left_weight + right_weight)
+        #*! Für später?
+        ## Verify the order of rows based on sum of weights (heaviest to lightest)
+        #for i in range(1, len(rows)):
+        #    prev_row = rows[i-1]
+        #    curr_row = rows[i]
+        #    prev_sum_weight = prev_row['sum_weight']
+        #    curr_sum_weight = curr_row['sum_weight']
+        #    self.assertGreaterEqual(prev_sum_weight, curr_sum_weight)
+
+
+    #def test_optimal_seating(self):
+    #    loading = #minimize_row_delta(passengers=passengers_stat#ic)
+    #    seating = optimize_seating(loading)
 
 if __name__ == '__main__':
     unittest.main()
