@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seating Arrangement</title>
+    <style>
+        .row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .seat {
+            width: 100px;
+            height: 50px;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Seating Arrangement</h1>
+    <div>
+        {% for row in seating_arrangement %}
+        <div class="row">
+            {% for key, value in row.items() %}
+            <div class="seat">
+                {% if value['preference'] == 'left' %}
+                    {{ value['name'] }}
+                {% endif %}
+            {% if value['preference'] == 'right' %}
+                {{ value['name'] }}           
+            {% endif %}               
+            </div>
+            {% endfor %}
+            <div class="seat">{{ row['sum_weight'] if 'sum_weight' in row else '000 kg' }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    
+</body>
+</html>
