@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Seating Arrangement</title>
+    <title>Seating Optimization Results</title>
     <style>
         .row {
             display: flex;
@@ -21,7 +21,10 @@
     </style>
 </head>
 <body>
-    <h1>Seating Arrangement</h1>
+    <h1>Seating Optimization Results</h1>
+    <h2>Passenger Data:</h2>
+    <p>{{ passengers }}</p>
+    <h2>Seating Arrangement</h1>
     <div>
         {% for row in seating_arrangement %}
         <div class="row">
